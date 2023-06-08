@@ -92,9 +92,16 @@ resource "aws_instance" "terraform_node_server" {
     volume_size = 10
   }
 
-  lifecycle {
-    create_before_destroy = true
+  provisioner "local-exec" {
+    command = templatefile("linux-ssh-config.tpl", {
+      hostname     = self.public_ip
+      user         = "ec2-user"
+      identityfile = "~/.ssh/terraform_demo_key"
+    })
+
+    interpreter = ["bash", "-c"]
   }
+
 
   tags = {
     name = "dev_node"
