@@ -2,10 +2,10 @@
 
 data "aws_ami" "terraform_demo_server_ami" {
   most_recent = true
-  owners      = ["925975727637"]
+  owners      = ["137112412989"]
 
   filter {
     name   = "name"
-    values = ["ZytbImg010422"]
+    values = ["al2023-ami-*-kernel-6.1-x86_64"]
   }
 }

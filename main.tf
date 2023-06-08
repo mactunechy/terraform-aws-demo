@@ -73,4 +73,33 @@ resource "aws_security_group" "terraform_demo_sg" {
 }
 
 
+resource "aws_key_pair" "terraform_demo_auth" {
+  key_name   = "terraform_demo_key"
+  public_key = file("~/.ssh/terraform_demo_key.pub")
+}
+
+
+resource "aws_instance" "terraform_node_server" {
+  instance_type          = "t2.micro"
+  ami                    = data.aws_ami.terraform_demo_server_ami.id
+  key_name               = aws_key_pair.terraform_demo_auth.id
+  vpc_security_group_ids = [aws_security_group.terraform_demo_sg.id]
+  subnet_id              = aws_subnet.terraform_demo_public_subnet.id
+  user_data              = file("userdata.tpl")
+
+
+  root_block_device {
+    volume_size = 10
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tags = {
+    name = "dev_node"
+  }
+}
+
+
 
